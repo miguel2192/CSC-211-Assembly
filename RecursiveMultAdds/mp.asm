@@ -1,5 +1,5 @@
 #########################################
-# Author: Miguel Rodriguez              #
+#                                       #
 # mp.asm - mp(a,b)                      #
 # Example of a recursive program that   #
 #   uses addition to create multiplica  #
@@ -7,29 +7,30 @@
 #  public static int fact(int a,b)      #
 #  {                                    #
 #    if (b == 1) return 1;              #
-#    else return (a*mp(a,b-1));         #
+#    else return (a+mp(a,b-1));         #
 #  }                                    #
 #########################################
 
         .text
         .globl __start
 __start:
-        la $a0,prompt  # display "Enter 1 number: "
+        la $a0,prompt  # display "Enter factorial number: "
         li $v0,4
         syscall	
 	
-        li $v0,5       # enter the 1 number
+        li $v0,5       # enter the factorial number
         syscall 
 	
-        move $a0,$v0   # call 1 method
+        move $a0,$v0   # call factorial method
         
+       #############################changes##############################
          
-        li $v0,5       # enter the 2 number
+        li $v0,5       # enter the factorial number
 	syscall 
 		
-        move $a1,$v0   # call 2 method
+        move $a1,$v0   # call factorial method
         
-      
+        ##############################changes#############################
         jal mp	
         move $t0,$v0   # save result in t0
 
@@ -45,8 +46,33 @@ __start:
         li $v0,4
         syscall
 
-        li $v0,10      # EOP
-        syscall
+        ###############################################################################
+	#             WHILE LOOP
+	#             CREATES REPETITION
+	###############################################################################      
+	        
+	#   	Ask the user if that user wishes to repeat this program:   1-yes, 0-no
+		la $a0,p4
+		li $v0,4
+		syscall
+	
+	#	Enter an integer (1 or 0)
+		la $v0,5  # Load address of the message area
+	        syscall
+	        
+	#       Compare input to 1
+	        beqz $v0,eop
+	
+	
+	#       if it is 1 repeat
+	        j __start
+	
+	
+	
+	eop:    li $v0,10   # End Of Program	
+	        syscall     # Call to system
+	
+        #################################################################################
 
 ################ fact method ####################
 # a0 - holds a                                  #
@@ -54,7 +80,7 @@ __start:
 # v0 - holds the returned result, a x b         #
 #################################################
 
-mp:   sub $sp,$sp,12  # push registers onto stack
+mp:     sub $sp,$sp,12  # push registers onto stack
         sw $a0,0($sp)
         sw $a1,4($sp)
         sw $ra,8($sp)
@@ -80,13 +106,29 @@ factret:
 prompt: .asciiz "Enter 2 numbers: "
 ans:    .asciiz "a x b = "
 endl:   .asciiz "\n"
+p4:	.asciiz	"\nWould you like to repeat the program:   (1-yes, 0-no)"
 
-######### Sample Output##########
-#                               #
-# Enter factorial number: 5     #
-# n! = 120                      #
-#                               #
-# Enter factorial number: 6     #
-# n! = 720                      #
-#                               #
-#################################
+######### Sample Output########################################################
+# Enter 2 numbers: **** user input : 10
+# **** user input : 2
+# a x b = 20
+# 
+# Would you like to repeat the program:   (1-yes, 0-no)**** user input : 1
+# Enter 2 numbers: **** user input : 5
+# **** user input : 5
+# a x b = 25
+# 
+# Would you like to repeat the program:   (1-yes, 0-no)**** user input : 1
+# Enter 2 numbers: **** user input : 15
+# **** user input : 3
+# a x b = 45
+#
+# Would you like to repeat the program:   (1-yes, 0-no)**** user input : 1
+# Enter 2 numbers: **** user input : 7
+# **** user input : 6
+# a x b = 42
+# 
+# Would you like to repeat the program:   (1-yes, 0-no)**** user input : 0
+# 
+# -- program is finished running --
+################################################################################### 
